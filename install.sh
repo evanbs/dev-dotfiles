@@ -9,7 +9,6 @@ warn() { echo -e "\033[0;33m[dotfiles]\033[0m $*"; }
 
 need_cmd() { command -v "$1" >/dev/null 2>&1; }
 
-# --- Detecta contexto ---
 is_container() {
   [ -f /.dockerenv ] || grep -q "docker\|lxc\|containerd" /proc/1/cgroup 2>/dev/null
 }
@@ -18,7 +17,6 @@ is_wsl() {
   grep -qi "microsoft\|wsl" /proc/version 2>/dev/null
 }
 
-# --- Symlinks ---
 link() {
   local src="$1" dst="$2"
   mkdir -p "$(dirname "$dst")"
@@ -30,7 +28,6 @@ link() {
   ok "Linked: $dst"
 }
 
-# --- Instala ferramenta se não existir ---
 ensure_apt() {
   local pkg="$1"
   if ! need_cmd "$pkg"; then
@@ -96,7 +93,6 @@ ensure_bat() {
   if ! need_cmd bat && ! need_cmd batcat; then
     log "Instalando bat..."
     sudo apt-get update -q && sudo apt-get install -y bat
-    # Ubuntu/Debian instalam como batcat
     if need_cmd batcat && ! need_cmd bat; then
       sudo ln -sf "$(which batcat)" /usr/local/bin/bat
     fi
@@ -146,7 +142,6 @@ else
   ensure_apt fzf
   ensure_apt jq
 
-  # Muda shell padrão para zsh se necessário
   if [ "$SHELL" != "$(which zsh)" ]; then
     log "Mudando shell padrão para zsh..."
     chsh -s "$(which zsh)"
@@ -156,16 +151,49 @@ fi
 # --- Configs pessoais (aplicadas em qualquer contexto) ---
 log "Aplicando configs pessoais..."
 
-# starship
-ensure_starship  # garante que está instalado mesmo no container
+ensure_starship
 link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
-
-# git
-link "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
-
-# aliases e zshrc pessoal
+link "$DOTFILES_DIR/git/.gitconfig"          "$HOME/.gitconfig"
 link "$DOTFILES_DIR/aliases/.aliases.local"  "$HOME/.aliases.local"
 link "$DOTFILES_DIR/zsh/.zshrc.local"        "$HOME/.zshrc.local"
+
+# --- Corrige o .zshrc gerado pela imagem base ---
+log "Corrigindo .zshrc..."
+
+# Desativa tema do oh-my-zsh para o starship assumir o prompt
+if grep -q 'ZSH_THEME=' "$HOME/.zshrc"; then
+  sed -i 's/ZSH_THEME=.*/ZSH_THEME=""/' "$HOME/.zshrc"
+  ok "ZSH_THEME desativado"
+fi
+
+# Configura plugins
+if grep -q '^plugins=(git)$' "$HOME/.zshrc"; then
+  sed -i 's/^plugins=(git)$/plugins=(git zsh-autosuggestions zsh-syntax-highlighting z)/' "$HOME/.zshrc"
+  ok "Plugins configurados"
+fi
+
+# Instala plugins externos
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+  log "Instalando zsh-autosuggestions..."
+  git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions \
+    "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+fi
+
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+  log "Instalando zsh-syntax-highlighting..."
+  git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting \
+    "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+fi
+
+# Garante que .zshrc.local é carregado
+if ! grep -q 'zshrc.local' "$HOME/.zshrc"; then
+  echo "" >> "$HOME/.zshrc"
+  echo "# Hook pessoal (dotfiles)" >> "$HOME/.zshrc"
+  echo '[ -f ~/.zshrc.local ] && source ~/.zshrc.local' >> "$HOME/.zshrc"
+  ok ".zshrc.local adicionado ao .zshrc"
+fi
 
 ok "Dotfiles aplicados com sucesso!"
 log "Para ativar: exec zsh -l"
