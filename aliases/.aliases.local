@@ -6,15 +6,8 @@
 
 # --- Editor pessoal ---
 # Ajuste para o seu editor preferido
-alias zshconfig='${EDITOR:-vim} ~/.zshrc'
-alias dotfiles='${EDITOR:-vim} ~/.aliases.local'
-
-# --- WSL2 (ignorado no container — comandos não existem) ---
-if grep -qi "microsoft\|wsl" /proc/version 2>/dev/null; then
-  alias explorer='explorer.exe'
-  alias wsl='wsl.exe'
-  alias clip-win='clip.exe'
-fi
-
-# --- ADB (mobile) ---
-# alias adb-cel='adb connect 192.168.15.9:41627'
+alias zshconfig='${EDITOR:-code} ~/.zshrc'
+alias dotfiles='${EDITOR:-code} ~/.aliases.local'
+alias cl=clear
+alias http=httpyac
+alias tree='eza --icons=always --color=always --group-directories-first --tree'
