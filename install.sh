@@ -187,6 +187,12 @@ if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
     "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-history-substring-search" ]; then
+  log "Instalando zsh-history-substring-search..."
+  git clone --depth 1 https://github.com/zsh-users/zsh-history-substring-search \
+    "$ZSH_CUSTOM/plugins/zsh-history-substring-search"
+fi
+
 # Garante que .zshrc.local é carregado
 if ! grep -q 'zshrc.local' "$HOME/.zshrc"; then
   echo "" >> "$HOME/.zshrc"
