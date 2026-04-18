@@ -1,0 +1,20 @@
+# =============================================================================
+# .aliases.local — aliases pessoais
+# Carregado por ~/.zshrc.local, que é carregado pelo hook da imagem base
+# Adicione aqui aliases que não fazem sentido para o time
+# =============================================================================
+
+# --- Editor pessoal ---
+# Ajuste para o seu editor preferido
+alias zshconfig='${EDITOR:-vim} ~/.zshrc'
+alias dotfiles='${EDITOR:-vim} ~/.aliases.local'
+
+# --- WSL2 (ignorado no container — comandos não existem) ---
+if grep -qi "microsoft\|wsl" /proc/version 2>/dev/null; then
+  alias explorer='explorer.exe'
+  alias wsl='wsl.exe'
+  alias clip-win='clip.exe'
+fi
+
+# --- ADB (mobile) ---
+# alias adb-cel='adb connect 192.168.15.9:41627'

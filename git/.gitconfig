@@ -1,0 +1,28 @@
+[user]
+  name = Evandro Barbosa
+  email = evandro.barbosa@yahoo.com.br
+
+[core]
+  pager = delta
+  editor = vim
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  features = side-by-side line-numbers decorations
+  navigate = true
+
+[delta "decorations"]
+  commit-decoration-style = bold yellow box
+  file-style = bold yellow ul
+  hunk-header-style = omit
+
+[merge]
+  conflictstyle = zdiff3
+
+[diff]
+  colorMoved = default
+
+[init]
+  defaultBranch = main

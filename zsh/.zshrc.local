@@ -1,0 +1,25 @@
+# =============================================================================
+# .zshrc.local — configs pessoais do zsh
+# Carregado automaticamente pelo hook da imagem base (devbase)
+# NÃO versionar dados sensíveis aqui
+# =============================================================================
+
+# --- Starship ---
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
+
+# --- Aliases pessoais ---
+[ -f ~/.aliases.local ] && source ~/.aliases.local
+
+# --- FNM (WSL2 — no container já está no .zshrc.append da imagem base) ---
+if ! grep -qi "docker\|lxc\|containerd" /proc/1/cgroup 2>/dev/null; then
+  if command -v fnm >/dev/null 2>&1; then
+    eval "$(fnm env --use-on-cd --shell zsh)"
+  fi
+fi
+
+# --- Variáveis de ambiente pessoais ---
+# Adicione aqui exports que não devem ir para o repositório
+# export ANTHROPIC_API_KEY="sk-ant-..."
+# export GH_TOKEN="ghp_..."
