@@ -126,6 +126,7 @@ ensure_rg() {
 if is_container; then
   log "Contexto: devcontainer"
   log "Imagem base já tem: zsh, fnm, node, eza, bat, rg, delta"
+  log "Starship deve ser instalado via devcontainer feature, não aqui"
   log "Aplicando apenas configs pessoais..."
 else
   log "Contexto: WSL2 / máquina física"
@@ -151,7 +152,9 @@ fi
 # --- Configs pessoais (aplicadas em qualquer contexto) ---
 log "Aplicando configs pessoais..."
 
-ensure_starship
+if ! is_container; then
+  ensure_starship
+fi
 link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 link "$DOTFILES_DIR/git/.gitconfig"          "$HOME/.gitconfig"
 link "$DOTFILES_DIR/aliases/.aliases.local"  "$HOME/.aliases.local"
