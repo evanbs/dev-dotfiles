@@ -63,7 +63,7 @@ O VS Code injeta automaticamente via `dotfiles.repository`.
 Para testar manualmente dentro de um container:
 
 ```bash
-git clone https://github.com/evanbs/dotfiles.git ~/dotfiles
+git clone https://github.com/evanbs/dev-dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./install.sh
 ```
@@ -92,7 +92,7 @@ em qualquer devcontainer:
 
 ```json
 {
-  "dotfiles.repository": "evanbs/dotfiles",
+  "dotfiles.repository": "evanbs/dev-dotfiles",
   "dotfiles.targetPath": "~/dotfiles",
   "dotfiles.installCommand": "install.sh"
 }

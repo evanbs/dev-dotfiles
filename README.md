@@ -1,19 +1,38 @@
 # dotfiles
 
 Configs pessoais de desenvolvimento baseadas em symlinks e um script shell.
+Funciona como **template** — cada dev cria o próprio fork e personaliza.
 
 Funciona em dois contextos:
 - **WSL2 / máquina física** — instala ferramentas e aplica configs
 - **Devcontainer** — só aplica configs (ferramentas já estão na [imagem base](https://github.com/evanbs/devbase))
 
-## Instalação
+## Novo no time? Comece aqui
 
-```bash
-git clone https://github.com/evanbs/dotfiles.git ~/dotfiles
-cd ~/dotfiles
-./install.sh
-exec zsh -l
+1. Fork ou copie este repositório para sua conta GitHub
+2. Edite `git/.gitconfig` com seu nome e e-mail
+3. (Opcional) Ajuste `aliases/.aliases.local` com seus atalhos pessoais
+4. Configure o VSCode uma vez:
+
+```json
+{
+  "dotfiles.repository": "<seu-usuario>/<seu-repo>",
+  "dotfiles.targetPath": "~/dotfiles",
+  "dotfiles.installCommand": "install.sh"
+}
 ```
+
+A partir daí, qualquer devcontainer que você abrir terá automaticamente
+seu gitconfig, starship e aliases pessoais — sem nenhuma configuração adicional.
+
+## O que personalizar
+
+| Arquivo | O que editar |
+|---|---|
+| `git/.gitconfig` | **Obrigatório** — nome e e-mail |
+| `aliases/.aliases.local` | Opcional — seus atalhos pessoais |
+| `starship/starship.toml` | Opcional — tema e prompt |
+| `zsh/.zshrc.local` | Opcional — vars de ambiente, plugins |
 
 ## O que instala (WSL2 / máquina física)
 
@@ -38,34 +57,17 @@ exec zsh -l
 | `aliases/.aliases.local` | `~/.aliases.local` |
 | `zsh/.zshrc.local` | `~/.zshrc.local` |
 
-## Uso com devcontainer
-
-Configurar no VS Code (uma vez por máquina):
-
-**Settings → buscar "dotfiles":**
-
-```json
-{
-  "dotfiles.repository": "evanbs/dotfiles",
-  "dotfiles.targetPath": "~/dotfiles",
-  "dotfiles.installCommand": "install.sh"
-}
-```
-
-A partir daí, qualquer container que você abrir vai ter
-automaticamente seu starship, gitconfig e aliases pessoais.
-
 ## Estrutura
 
 ```
 dotfiles/
-├── install.sh
+├── install.sh               # entry point — detecta contexto e executa
 ├── zsh/
-│   └── .zshrc.local
+│   └── .zshrc.local         # starship, fnm, aliases
 ├── starship/
-│   └── starship.toml
+│   └── starship.toml        # tema do prompt
 ├── git/
-│   └── .gitconfig
+│   └── .gitconfig           # identidade git + delta
 └── aliases/
-    └── .aliases.local
+    └── .aliases.local       # atalhos pessoais
 ```
